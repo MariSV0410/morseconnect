@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7fbf4">
+  <title>MorseConnect | Un mundo de señales</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="MorseConnect inicio">
+        <span class="brand-mark">·−</span>
+        <span class="brand-name">Morse<span>Link</span><i>✿</i></span>
+      </a>
+      <div class="topbar-right">
+        <span class="top-note">Pequeñas señales, grandes mensajes</span>
+        <div class="status"><span class="status-dot"></span><span id="connectionText">Conectado a Internet</span></div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-decoration flower flower-one">✿</div>
+        <div class="hero-decoration flower flower-two">✿</div>
+        <div class="hero-decoration sparkle sparkle-one">✧</div>
+        <div class="hero-decoration sparkle sparkle-two">✦</div>
+        <div class="hero-copy">
+          <span class="eyebrow"><span>✧</span> COMUNICACIÓN · TRADUCCIÓN · CONEXIÓN</span>
+          <h1>Un mundo de señales,<br><em>infinitas formas</em> de decir.</h1>
+          <p>Convierte tus palabras en puntos y rayas, descubre mensajes secretos y deja que la luz y el sonido hablen por ti.</p>
+          <div class="hero-pills">
+            <span><b>✿</b> Texto a Morse</span>
+            <span><b>✧</b> Morse a texto</span>
+            <span><b>♡</b> Luz y sonido</span>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
+          <div class="hero-medallion"><span class="medallion-flower">✿</span><strong>· − ·</strong><small>MORSE CODE</small></div>
+          <span class="floating-dot dot-a">·</span><span class="floating-dot dot-b">−</span>
+          <span class="floating-star star-a">✧</span><span class="floating-star star-b">✦</span>
+        </div>
+        <div class="hero-bottom-note">HECHO CON CURIOSIDAD <span>♡</span></div>
+      </section>
+
+      <section class="status-banner {% if hardware_enabled %}hardware-on{% endif %}" id="hardwareBanner">
+        <div class="status-icon">⌁</div>
+        <div class="status-copy"><strong>{% if hardware_enabled %}¡Tu placa está conectada!{% else %}Modo de simulación activo{% endif %}</strong><p>{% if hardware_enabled %}La Pico W puede utilizar el botón, el LED y el buzzer por USB serial.{% else %}Puedes probar las traducciones. Para usar las señales físicas, conecta y configura la Raspberry Pi Pico W por USB.{% endif %}</p></div>
+        <span class="mode-tag">{% if hardware_enabled %}GPIO ACTIVO{% else %}MODO DEMO{% endif %}</span>
+      </section>
+
+      <section class="workspace">
+        <div class="section-heading">
+          <div><span class="eyebrow">✧ TU ESPACIO CREATIVO</span><h2>Traductor Morse <span class="heading-flower">✿</span></h2><p>Elige cómo quieres comunicar tu mensaje.</p></div>
+          <span class="section-number">01 <i>/</i> 03</span>
+        </div>
+        <div class="translator-grid">
+          <article class="panel panel-pink">
+            <div class="panel-topline"><span>01 · CONVIERTE</span><span class="tiny-flower">✿</span></div>
+            <div class="panel-heading"><span class="panel-icon pink-icon">Aa</span><div><h3>Texto a Morse</h3><p>Tus palabras se transforman en señales.</p></div></div>
+            <label for="textInput">ESCRIBE TU MENSAJE</label>
+            <textarea id="textInput" rows="4" placeholder="Había una vez...">HOLA MUNDO</textarea>
+            <button class="button primary" id="encodeBtn">Convertir a Morse <span>→</span></button>
+            <div class="result-box"><div class="result-label">✧ TU CÓDIGO MORSE</div><div class="morse-output" id="encodeOutput">· · · ·　 − − −　 · − · ·　 ·</div><button class="copy-button" data-copy="encodeOutput" title="Copiar">Copiar</button></div>
+            <button class="button secondary" id="playBtn"><span class="play-icon">▷</span> Reproducir con LED y buzzer</button>
+          </article>
+
+          <article class="panel panel-green">
+            <div class="panel-topline"><span>02 · DESCIFRA</span><span class="tiny-flower">✧</span></div>
+            <div class="panel-heading"><span class="panel-icon green-icon">·−</span><div><h3>Morse a texto</h3><p>Descubre qué dicen los puntos y rayas.</p></div></div>
+            <label for="morseInput">INTRODUCE EL CÓDIGO</label>
+            <textarea id="morseInput" rows="4" placeholder="Ejemplo: .... --- .-.. .- / -- ..- -. -.. ---"></textarea>
+            <div class="quick-symbols"><button type="button" data-symbol=".">Punto <b>·</b></button><button type="button" data-symbol="-">Raya <b>−</b></button><button type="button" data-symbol=" ">Espacio</button><button type="button" data-symbol=" / ">Palabra <b>/</b></button></div>
+            <button class="button primary green-button" id="decodeBtn">Traducir a texto <span>→</span></button>
+            <div class="result-box"><div class="result-label">✧ TU MENSAJE DESCIFRADO</div><div class="text-output" id="decodeOutput">Tu mensaje aparecerá aquí...</div><button class="copy-button" data-copy="decodeOutput" title="Copiar">Copiar</button></div>
+          </article>
+        </div>
+      </section>
+      <section class="hardware-section">
+        <div class="section-heading">
+          <div><span class="eyebrow">✧ TU PROTOTIPO</span><h2>Entrada por botón <span class="heading-flower">♡</span></h2><p>Observa cómo tu circuito interpreta cada pulsación.</p></div>
+          <span class="section-number">02 <i>/</i> 03</span>
+        </div>
+        <div class="hardware-card">
+          <div class="hardware-visual">
+            <span class="visual-caption">SEÑALES EN VIVO</span>
+            <div class="led-halo"><div class="led-light" id="ledIndicator"></div></div>
+            <div class="button-graphic">●</div>
+            <div class="sound-bars"><i></i><i></i><i></i><i></i><i></i></div>
+            <span class="visual-label">LUZ · BOTÓN · SONIDO</span>
+          </div>
+          <div class="hardware-info">
+            <span class="mini-label">CIRCUITO ELECTRÓNICO</span>
+            <h3>¡Pulsa y crea tu mensaje!</h3>
+            <p>Al presionar el botón conectado a la Raspberry Pi Pico W, el sistema interpreta una pulsación corta como punto y una larga como raya.</p>
+            <div class="button-row"><button class="button secondary" id="readButton">Consultar señales recibidas <span>→</span></button><span class="small-note" id="buttonStatus">Esperando señal del botón...</span></div>
+            <div class="result-box compact"><div class="result-label">✧ SEÑAL RECIBIDA</div><div class="morse-output" id="buttonMorse">—</div><div class="text-output" id="buttonText">Aún no hay mensajes.</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="history-section">
+        <div class="section-heading">
+          <div><span class="eyebrow">✧ TUS RECUERDOS</span><h2>Historial de mensajes <span class="heading-flower">✿</span></h2><p>Un pequeño registro de todo lo que has traducido.</p></div>
+          <span class="section-number">03 <i>/</i> 03</span>
+        </div>
+        <div class="history-card"><div class="history-head"><div><h3>Mensajes guardados</h3><p>Tu actividad reciente en este dispositivo.</p></div><button class="clear-button" id="clearHistory">Limpiar historial</button></div><div id="historyList" class="history-list"><p class="empty-state">✿ Todavía no hay mensajes guardados. ¡Empieza a traducir!</p></div></div>
+      </section>
+
+      <section class="remote-card internet-card">
+        <div class="remote-icon">♡</div>
+        <div class="remote-copy"><span class="eyebrow">MENSAJES POR INTERNET</span><h2>Tu bandeja compartida</h2><p>Publica el mensaje convertido y cualquier persona que abra este mismo enlace podrá recibirlo en su celular o computadora.</p></div>
+        <div class="remote-controls internet-controls"><input id="senderName" type="text" maxlength="40" placeholder="Tu nombre (opcional)"><button class="button primary" id="sendRemote">Enviar por Internet <span>→</span></button></div>
+        <div class="internet-inbox"><div class="inbox-heading"><strong>Mensajes recibidos</strong><span id="inboxStatus">Conectando...</span></div><div id="inboxList" class="inbox-list"><p class="empty-state">Todavía no hay mensajes. ¡Envía el primero!</p></div></div>
+      </section>
+    </main>
+    <footer><span class="brand-mark small-mark">·−</span><span class="footer-brand">MorseConnect <i>✿</i></span><span>Sistema de comunicación y traducción de código Morse</span><span class="footer-year">Proyecto final · 2026 ♡</span></footer>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
